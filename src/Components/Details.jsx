@@ -3,18 +3,20 @@ import React, { useState } from 'react';
 import { Container,Form, Table, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { validateDetailData } from '../utils/validation'; 
+import { validateDetailData   } from '../utils/validation'; 
+
 const Details = () => {
   const [error,setError]=useState(false)
   const [detailData, setDetailData] = useState([{ item_code: '', item_name: '', description: '', qty: '', rate: '' }]);
   const dispatch = useDispatch();
 
+  //functions
   const handleDetailChange = (index, key, value) => {
     const updatedData = [...detailData];
     updatedData[index][key] = value;
     setDetailData(updatedData);
   };
-
+  
   const handleAddRow = () => {
     setDetailData([...detailData, { item_code: '', item_name: '', description: '', qty: '', rate: '' }]);
   };
@@ -30,7 +32,7 @@ const Details = () => {
     if (validateDetailData(detailData)) {
       try {
         // Make API call to insert data
-        const response = await axios.post('http://5.189.180.8:8010/detail', { detail_table: detailData });
+        const response = await axios.post('http://5.189.180.8:8010/detail/multiple', { detail_table: detailData });
         
         // Dispatch an action with the response if needed
         dispatch({ type: 'DETAIL_SUBMITTED', payload: response.data });

@@ -5,7 +5,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { validateHeaderData, validateDetailData } from "../utils/validation";
 
-const Header = () => {
+const SalesPage = () => {
   //Hooks
   //  const [srNum,setSrNum]=useState(1)
   const [itemDetails, SetItemDetails] = useState([]);
@@ -308,4 +308,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default SalesPage ;

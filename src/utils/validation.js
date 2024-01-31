@@ -25,7 +25,7 @@ export const validateDetailData = (detailData) => {
     for (const row of detailData) {
       const { item_code, item_name, description, qty, rate } = row;
   
-      if (!item_code || !item_name || !qty || !rate) {
+      if (!item_code || !item_name || !qty || !rate || !description) {
         // Display error message or throw an error if any required field is missing
         console.log('All fields in the detail row are required');
         return false;
