@@ -110,8 +110,8 @@ const SalesPage = () => {
           }
         );
         if (response) {
-          alert("submited");
           console.log(response);
+          alert("submited");
           window.location.reload()
         }
       } catch (error) {
