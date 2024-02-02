@@ -1,26 +1,24 @@
-// Header Component
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Form, Container, Button, Row, Col, Table } from "react-bootstrap";
-import axios from "axios";
-import { useDispatch } from "react-redux";
 import { validateHeaderData, validateDetailData } from "../utils/validation";
 
 const SalesPage = () => {
   //Hooks
-  //  const [srNum,setSrNum]=useState(1)
+  
   const [itemDetails, SetItemDetails] = useState([]);
   const [error, setError] = useState(false);
   const [headerData, setHeaderData] = useState({
-    vr_no: 1,
+    vr_no: 0,
     vr_date: "",
     ac_name: "",
-    ac_amt:1 ,
+    ac_amt: 1,
     status: "",
   });
   const [detailData, setDetailData] = useState([
     {
-      vr_no: 1,
-      sr_no: 1,
+      vr_no: "",
+      sr_no: 0,
       item_code: "",
       item_name: "",
       description: "",
@@ -28,27 +26,41 @@ const SalesPage = () => {
       rate: 0,
     },
   ]);
-  //useEff
+
   useEffect(() => {
+    //fetch data
     async function FetchData() {
       try {
         const response = await axios.get("http://5.189.180.8:8010/item");
         if (response.data) {
-          // console.log(response.data);
           SetItemDetails(response.data);
         }
       } catch (error) {
         console.log(error);
       }
     }
+    // GET CURRENT DATE
+    const getCurrentDate = () => {
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+      const day = String(currentDate.getDate()).padStart(2, "0");
+
+      setHeaderData({ ...headerData, vr_date: `${year}-${month}-${day}` });
+    };
+    getCurrentDate();
     FetchData();
-    //  console.log(itemDetails.data);
   }, []);
-  const dispatch = useDispatch();
 
   // Header section functions
   const handleHeaderChange = (key, value) => {
     setHeaderData({ ...headerData, [key]: value });
+    if (key == "vr_no") {
+      const updatedData = [...detailData];
+      updatedData[0][key] = value;
+      setDetailData(updatedData);
+      console.log(detailData);
+    }
   };
 
   //detail table functions
@@ -57,17 +69,14 @@ const SalesPage = () => {
     updatedData[index][key] = value;
     setDetailData(updatedData);
   };
-
+  //Add new Row
   const handleAddRow = () => {
-    // setSrNum(srNum+1)
-    // console.log(srNum);
-    // console.log(detailData);
     if (validateDetailData(detailData)) {
-      setDetailData([
+      setDetailData((prevstate) => [
         ...detailData,
         {
-          vr_no: 45868751,
-          sr_no: 2,
+          vr_no: headerData.vr_no,
+          sr_no: prevstate[prevstate.length - 1].sr_no++,
           item_code: "",
           item_name: "",
           description: "",
@@ -77,18 +86,22 @@ const SalesPage = () => {
       ]);
     }
   };
-
+  //Remove Row
   const handleRemoveRow = (index) => {
     const updatedData = [...detailData];
     updatedData.splice(index, 1);
     setDetailData(updatedData);
   };
-
+  // Calculate Total Amount
+  const calculateTotalAmount = () => {
+    return detailData.reduce((total, row) => total + row.qty * row.rate, 0);
+  };
+  //Submit Data
   const handleDetailSubmit = async () => {
-    // Validate header data && detailData
+   
     if (validateHeaderData(headerData) && validateDetailData(detailData)) {
       try {
-        // Make API call to insert data
+        // API call to insert data
         const response = await axios.post(
           "http://5.189.180.8:8010/header/multiple",
           {
@@ -96,29 +109,20 @@ const SalesPage = () => {
             detail_table: detailData,
           }
         );
-        if (response) console.log(response);
-        // Dispatch an action with the response if needed
-        dispatch({ type: "HEADER_SUBMITTED", payload: response.data });
+        if (response) {
+          alert("submited");
+          console.log(response);
+          window.location.reload()
+        }
       } catch (error) {
-        // Handle API call error
         console.log(
           `header Data :${headerData} ##### detailsData:${detailData}`
         );
         console.log("Error In submitting  data:", error);
-        // Display error message or take appropriate action
       }
     } else {
       setError(true);
     }
-  };
-
-  // GET CURRENT DATE
-  const getCurrentDate = () => {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const day = String(currentDate.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
   };
 
   return (
@@ -131,7 +135,7 @@ const SalesPage = () => {
       <Form>
         {error ? (
           <div className="text-danger">
-            All fields are required & Enter data in correct format{" "}
+            All fields are required & Enter data in correct format
           </div>
         ) : (
           ""
@@ -153,7 +157,7 @@ const SalesPage = () => {
               <Form.Label>Voucher Date</Form.Label>
               <Form.Control
                 type="date"
-                value={getCurrentDate()}
+                value={headerData.vr_date}
                 readOnly
                 onChange={(e) => handleHeaderChange("vr_date", e.target.value)}
               />
@@ -165,6 +169,7 @@ const SalesPage = () => {
               <Form.Select
                 onChange={(e) => handleHeaderChange("status", e.target.value)}
               >
+                <option value="">select</option>
                 <option value="A">Active</option>
                 <option value="I">Inactive</option>
               </Form.Select>
@@ -187,23 +192,17 @@ const SalesPage = () => {
               <Form.Label>Amount</Form.Label>
               <Form.Control
                 type="number"
-                value={headerData.ac_amt}
-                placeholder="Enter Amount"
+                disabled
+                value={calculateTotalAmount()}
                 onChange={(e) => handleHeaderChange("ac_amt", e.target.value)}
               />
             </Form.Group>
           </Col>
         </Row>
-        {/* <Button variant="primary" onClick={handleHeaderSubmit} className="my-3">
-          Submit
-        </Button> */}
       </Form>
       {/* details sec */}
       <Container>
-        <h2 className="text-center">Details</h2>
-        {/* { error?
-      <div className='text-danger'>All fields are required & Enter data in correct format  </div>:""
-} */}
+        <h2 className="text-center mt-5 mb-3">Details</h2>
         <Form>
           <Table striped bordered hover>
             <thead>
@@ -226,11 +225,10 @@ const SalesPage = () => {
                         handleDetailChange(index, "item_code", e.target.value)
                       }
                     >
-                      {
-                        itemDetails.map((item)=>(
-                          <option key={item.item_code}>{item.item_code}</option>
-                        ))
-                      }
+                      <option value="">select</option>
+                      {itemDetails.map((item) => (
+                        <option key={item.item_code}>{item.item_code}</option>
+                      ))}
                     </Form.Select>
                   </td>
 
@@ -242,11 +240,10 @@ const SalesPage = () => {
                         handleDetailChange(index, "item_name", e.target.value)
                       }
                     >
-                          {
-                        itemDetails.map((item)=>(
-                          <option key={item.item_code}>{item.item_name}</option>
-                        ))
-                      }
+                      <option value="">select</option>
+                      {itemDetails.map((item) => (
+                        <option key={item.item_name}>{item.item_name}</option>
+                      ))}
                     </Form.Select>
                   </td>
                   <td>
@@ -261,6 +258,7 @@ const SalesPage = () => {
                   <td>
                     <Form.Control
                       type="number"
+                      min="1"
                       value={row.qty}
                       onChange={(e) =>
                         handleDetailChange(index, "qty", e.target.value)
@@ -270,6 +268,7 @@ const SalesPage = () => {
                   <td>
                     <Form.Control
                       type="number"
+                      min="1"
                       value={row.rate}
                       onChange={(e) =>
                         handleDetailChange(index, "rate", e.target.value)
@@ -308,4 +307,4 @@ const SalesPage = () => {
   );
 };
 
-export default SalesPage ;
+export default SalesPage;
