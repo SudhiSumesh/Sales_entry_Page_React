@@ -1,8 +1,7 @@
 # React-Redux Sales Entry Project
  
- Live Demo : https://sudhisumesh.github.io/Sales_entry_Page_React/
  
-  <video src="WhatsApp%20Video%202024-02-02%20at%2011.50.50%20AM.mp4" controls title="Title"></video>
+ https://github.com/SudhiSumesh/Sales_entry_Page_React/assets/138238228/cbb91fd8-dc70-46d1-a8a9-2362a7a2c76b
 
 This project is a Single Page Sales Entry front-end application built using ReactJS and Redux. It includes two sections, one for the header table and the other for the detail table.
 
