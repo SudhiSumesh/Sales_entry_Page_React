@@ -31,7 +31,7 @@ const SalesPage = () => {
     //fetch data
     async function FetchData() {
       try {
-        const response = await axios.get("http://5.189.180.8:8010/item");
+        const response = await axios.get(import.meta.env.VITE_GET_URL);
         if (response.data) {
           SetItemDetails(response.data);
         }
@@ -103,7 +103,7 @@ const SalesPage = () => {
       try {
         // API call to insert data
         const response = await axios.post(
-          "http://5.189.180.8:8010/header/multiple",
+          import.meta.env.VITE_POST_URL,
           {
             header_table: headerData,
             detail_table: detailData,
