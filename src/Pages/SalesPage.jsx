@@ -59,7 +59,7 @@ const SalesPage = () => {
       const updatedData = [...detailData];
       updatedData[0][key] = value;
       setDetailData(updatedData);
-      console.log(detailData);
+     
     }
   };
 
@@ -143,7 +143,7 @@ const SalesPage = () => {
         <Row>
           <Col className="col-4">
             <Form.Group controlId="formInvoiceNumber">
-              <Form.Label>Invoice Number(*unique)</Form.Label>
+              <Form.Label>Invoice Number  {/* unique */}</Form.Label>
               <Form.Control
                 type="text"
                 value={headerData.vr_no}
