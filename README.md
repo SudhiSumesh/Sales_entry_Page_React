@@ -3,38 +3,15 @@
  
  https://github.com/SudhiSumesh/Sales_entry_Page_React/assets/138238228/cbb91fd8-dc70-46d1-a8a9-2362a7a2c76b
 
-This project is a Single Page Sales Entry front-end application built using ReactJS and Redux. It includes two sections, one for the header table and the other for the detail table.
+This project is a Single Page Sales Entry front-end application built using ReactJS . It includes two sections, one for the header table and the other for the detail table.
 
 ## Getting Started
 
 To get started with the project, follow these steps:
 
-1. Clone the repository: `git clone <repository-url>`
+1. Clone the repository: `git clone https://github.com/SudhiSumesh/Sales_entry_Page_React/`
 2. Install dependencies: `npm install`
-3. Run the development server: `npm start`
-
-## Project Structure
-
-The project is structured as follows:
-
-- `components/`: Contains React components for Header and Details sections.
-- `Redux/`: Holds Redux-related files including actions, reducers, and the Redux store configuration.
-- `utils/`: Includes utility functions such as validation.
-
-## Components
-
-### Header Component
-
-The Header component allows users to enter information for the header table, including fields such as Invoice Number, Voucher Date, Customer Name, Amount, and Status.
-
-### Details Component
-
-The Details component allows users to enter data for multiple rows in the detail table. Each row includes fields for Item Code, Item Name, Description, Quantity, and Rate. Users can dynamically add or remove rows.
-
-## Redux
-
-The project uses Redux for state management. Actions and reducers are defined in the `Redux/` directory.
-
+3. Run the development server: `npm run dev`
 
 ## Usage
 
